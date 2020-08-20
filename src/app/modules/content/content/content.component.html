@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-12">
+          <h2>Content List</h2>
+        </div>
+        <div class="col-12">
+          <div class="row">
+            <div class="col-4">
+              <ng-select [clearable]="false" [items]="categoryList" class="custom mb-0" bindLabel="name"
+                placeholder="Select Category" [ngModelOptions]="{standalone: true}" [(ngModel)]="selectedCategoryId"
+                bindValue="categoryId" (change)="changeCategory($event)">
+              </ng-select>
+            </div>
+            <div class="col-4 my-2 my-lg-0 ">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                [(ngModel)]="searchText" [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="col-4">
+              <button [disabled]="!selectedCategoryId" title="Select Category For Add Content"
+                class="btn btn-sm btn-primary" (click)="open(mymodal)">Add
+                Content</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Content</th>
+            <th>File</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of contentList | filter : 'content': searchText;let i = index ">
+            <td>{{i+1}}</td>
+            <td>{{item.content}}</td>
+            <td>
+              <a class="btn btn-primary btn-sm" role="button" [href]="item.fileUrl" target="_self">View
+              </a>
+            </td>
+          </tr>
+          <tr class="text-center" *ngIf="contentList.length === 0">
+            <td colspan="4">No Records Found.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #mymodal let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Content Modal</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="contentForm" (ngSubmit)="submitContentForm(contentForm.value)">
+            <div class="form-group">
+              <label for="">Content *</label>
+              <input type="text" formControlName="content" placeholder="Enter Content" class="form-control">
+              <div *ngIf="contentFormControls.content.errors">
+                <p *ngIf="isSubmitted && !!contentFormControls.content.errors.required">
+                  Please enter content name
+                </p>
+                <p *ngIf="contentFormControls.content.errors.invalidValue">
+                  Please enter valid content
+                </p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="">File *</label>
+              <button type="button" (click)="uploadImage.click()" type="button" class="btn btn-sm btn-success">
+                <span>Upload File</span>
+                <input #uploadImage type="file" (change)="onFileChange($event,'image')" style="display:none;"
+                  accept="image/*" />
+              </button>
+              <div *ngIf="contentFormControls.image.errors">
+                <p *ngIf="isSubmitted && !!contentFormControls.image.errors.required">
+                  Please enter category name
+                </p>
+                <p *ngIf="contentFormControls.image.errors.invalidValue">
+                  Please enter valid category name
+                </p>
+              </div>
+            </div>
+            <button type="submit" [disabled]="!contentForm.valid" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </ng-template>
+    </div>
+    <div class="col-md-3">
+    </div>
+  </div>
+</div>
